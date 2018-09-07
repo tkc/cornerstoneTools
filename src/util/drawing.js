@@ -1,5 +1,5 @@
 import external from '../externalModules.js';
-import { toolStyle, textStyle } from '../index.js';
+import {toolStyle, textStyle} from '../index.js';
 
 /**
  * A {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillStyle|color, gradient or pattern} to use inside shapes.
@@ -24,9 +24,9 @@ import { toolStyle, textStyle } from '../index.js';
  * @returns {CanvasRenderingContext2D}
  */
 export function getNewContext (canvas) {
-  const context = canvas.getContext('2d');
+  const context = canvas.getContext ('2d');
 
-  context.setTransform(1, 0, 0, 1, 0, 0);
+  context.setTransform (1, 0, 0, 1, 0, 0);
 
   return context;
 }
@@ -40,9 +40,9 @@ export function getNewContext (canvas) {
  * @param {ContextFn} fn - A function which performs drawing operations within the given context.
  */
 export function draw (context, fn) {
-  context.save();
-  fn(context);
-  context.restore();
+  context.save ();
+  fn (context);
+  context.restore ();
 }
 
 /**
@@ -60,25 +60,27 @@ export function draw (context, fn) {
  * @param {ContextFn} fn - A drawing function to execute with the provided stroke pattern.
  */
 export function path (context, options, fn) {
+  const {color, lineWidth, fillStyle, lineDash} = options;
 
-  const { color, lineWidth, fillStyle, lineDash } = options;
-
-  context.beginPath();
+  context.beginPath ();
   context.strokeStyle = color || context.strokeStyle;
-  context.lineWidth = lineWidth || (lineWidth === undefined && toolStyle.getToolWidth()) || context.lineWidth;
+  context.lineWidth =
+    lineWidth ||
+    (lineWidth === undefined && toolStyle.getToolWidth ()) ||
+    context.lineWidth;
   if (lineDash) {
-    context.setLineDash(lineDash);
+    context.setLineDash (lineDash);
   }
 
-  fn(context);
+  fn (context);
 
   if (fillStyle) {
     context.fillStyle = fillStyle;
-    context.fill();
+    context.fill ();
   }
-  context.stroke();
+  context.stroke ();
   if (lineDash) {
-    context.setLineDash([]);
+    context.setLineDash ([]);
   }
 }
 
@@ -113,17 +115,24 @@ export function setShadow (context, options) {
  *     system of the points passed in to the function. If "pixel" then cornerstone.pixelToCanvas
  *     is used to transform the points from pixel to canvas coordinates.
  */
-export function drawLine (context, element, start, end, options, coordSystem = 'pixel') {
-  path(context, options, (context) => {
+export function drawLine (
+  context,
+  element,
+  start,
+  end,
+  options,
+  coordSystem = 'pixel'
+) {
+  path (context, options, context => {
     if (coordSystem === 'pixel') {
       const cornerstone = external.cornerstone;
 
-      start = cornerstone.pixelToCanvas(element, start);
-      end = cornerstone.pixelToCanvas(element, end);
+      start = cornerstone.pixelToCanvas (element, start);
+      end = cornerstone.pixelToCanvas (element, end);
     }
 
-    context.moveTo(start.x, start.y);
-    context.lineTo(end.x, end.y);
+    context.moveTo (start.x, start.y);
+    context.lineTo (end.x, end.y);
   });
 }
 
@@ -139,21 +148,27 @@ export function drawLine (context, element, start, end, options, coordSystem = '
  *     system of the points passed in to the function. If "pixel" then cornerstone.pixelToCanvas
  *     is used to transform the points from pixel to canvas coordinates.
  */
-export function drawLines (context, element, lines, options, coordSystem = 'pixel') {
-  path(context, options, (context) => {
-    lines.forEach((line) => {
+export function drawLines (
+  context,
+  element,
+  lines,
+  options,
+  coordSystem = 'pixel'
+) {
+  path (context, options, context => {
+    lines.forEach (line => {
       let start = line.start;
       let end = line.end;
 
       if (coordSystem === 'pixel') {
         const cornerstone = external.cornerstone;
 
-        start = cornerstone.pixelToCanvas(element, start);
-        end = cornerstone.pixelToCanvas(element, end);
+        start = cornerstone.pixelToCanvas (element, start);
+        end = cornerstone.pixelToCanvas (element, end);
       }
 
-      context.moveTo(start.x, start.y);
-      context.lineTo(end.x, end.y);
+      context.moveTo (start.x, start.y);
+      context.lineTo (end.x, end.y);
     });
   });
 }
@@ -170,17 +185,24 @@ export function drawLines (context, element, lines, options, coordSystem = 'pixe
  *     system of the points passed in to the function. If "pixel" then cornerstone.pixelToCanvas
  *     is used to transform the points from pixel to canvas coordinates.
  */
-export function drawJoinedLines (context, element, start, points, options, coordSystem = 'pixel') {
-  path(context, options, (context) => {
+export function drawJoinedLines (
+  context,
+  element,
+  start,
+  points,
+  options,
+  coordSystem = 'pixel'
+) {
+  path (context, options, context => {
     if (coordSystem === 'pixel') {
       const cornerstone = external.cornerstone;
 
-      start = cornerstone.pixelToCanvas(element, start);
-      points = points.map((p) => cornerstone.pixelToCanvas(element, p));
+      start = cornerstone.pixelToCanvas (element, start);
+      points = points.map (p => cornerstone.pixelToCanvas (element, p));
     }
-    context.moveTo(start.x, start.y);
-    points.forEach(({ x, y }) => {
-      context.lineTo(x, y);
+    context.moveTo (start.x, start.y);
+    points.forEach (({x, y}) => {
+      context.lineTo (x, y);
     });
   });
 }
@@ -197,13 +219,20 @@ export function drawJoinedLines (context, element, start, points, options, coord
  *     system of the points passed in to the function. If "pixel" then cornerstone.pixelToCanvas
  *     is used to transform the points from pixel to canvas coordinates.
  */
-export function drawCircle (context, element, center, radius, options, coordSystem = 'pixel') {
+export function drawCircle (
+  context,
+  element,
+  center,
+  radius,
+  options,
+  coordSystem = 'pixel'
+) {
   if (coordSystem === 'pixel') {
-    center = external.cornerstone.pixelToCanvas(element, center);
+    center = external.cornerstone.pixelToCanvas (element, center);
   }
 
-  path(context, options, (context) => {
-    context.arc(center.x, center.y, radius, 0, 2 * Math.PI);
+  path (context, options, context => {
+    context.arc (center.x, center.y, radius, 0, 2 * Math.PI);
   });
 }
 
@@ -219,32 +248,39 @@ export function drawCircle (context, element, center, radius, options, coordSyst
  *     system of the points passed in to the function. If "pixel" then cornerstone.pixelToCanvas
  *     is used to transform the points from pixel to canvas coordinates.
  */
-export function drawEllipse (context, element, corner1, corner2, options, coordSystem = 'pixel') {
+export function drawEllipse (
+  context,
+  element,
+  corner1,
+  corner2,
+  options,
+  coordSystem = 'pixel'
+) {
   // http://stackoverflow.com/questions/2172798/how-to-draw-an-oval-in-html5-canvas
   if (coordSystem === 'pixel') {
-    corner1 = external.cornerstone.pixelToCanvas(element, corner1);
-    corner2 = external.cornerstone.pixelToCanvas(element, corner2);
+    corner1 = external.cornerstone.pixelToCanvas (element, corner1);
+    corner2 = external.cornerstone.pixelToCanvas (element, corner2);
   }
-  const x = Math.min(corner1.x, corner2.x);
-  const y = Math.min(corner1.y, corner2.y);
-  const w = Math.abs(corner1.x - corner2.x);
-  const h = Math.abs(corner1.y - corner2.y);
+  const x = Math.min (corner1.x, corner2.x);
+  const y = Math.min (corner1.y, corner2.y);
+  const w = Math.abs (corner1.x - corner2.x);
+  const h = Math.abs (corner1.y - corner2.y);
 
   const kappa = 0.5522848,
-    ox = (w / 2) * kappa, // Control point offset horizontal
-    oy = (h / 2) * kappa, // Control point offset vertical
+    ox = w / 2 * kappa, // Control point offset horizontal
+    oy = h / 2 * kappa, // Control point offset vertical
     xe = x + w, // X-end
     ye = y + h, // Y-end
     xm = x + w / 2, // X-middle
     ym = y + h / 2; // Y-middle
 
-  path(context, options, (context) => {
-    context.moveTo(x, ym);
-    context.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
-    context.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
-    context.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
-    context.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
-    context.closePath();
+  path (context, options, context => {
+    context.moveTo (x, ym);
+    context.bezierCurveTo (x, ym - oy, xm - ox, y, xm, y);
+    context.bezierCurveTo (xm + ox, y, xe, ym - oy, xe, ym);
+    context.bezierCurveTo (xe, ym + oy, xm + ox, ye, xm, ye);
+    context.bezierCurveTo (xm - ox, ye, x, ym + oy, x, ym);
+    context.closePath ();
   });
 }
 
@@ -260,21 +296,27 @@ export function drawEllipse (context, element, corner1, corner2, options, coordS
  *     system of the points passed in to the function. If "pixel" then cornerstone.pixelToCanvas
  *     is used to transform the points from pixel to canvas coordinates.
  */
-export function drawRect (context, element, corner1, corner2, options, coordSystem = 'pixel') {
+export function drawRect (
+  context,
+  element,
+  corner1,
+  corner2,
+  options,
+  coordSystem = 'pixel'
+) {
   if (coordSystem === 'pixel') {
     const cornerstone = external.cornerstone;
-
-    corner1 = cornerstone.pixelToCanvas(element, corner1);
-    corner2 = cornerstone.pixelToCanvas(element, corner2);
+    corner1 = cornerstone.pixelToCanvas (element, corner1);
+    corner2 = cornerstone.pixelToCanvas (element, corner2);
   }
 
-  const left = Math.min(corner1.x, corner2.x);
-  const top = Math.min(corner1.y, corner2.y);
-  const width = Math.abs(corner1.x - corner2.x);
-  const height = Math.abs(corner1.y - corner2.y);
+  const left = Math.min (corner1.x, corner2.x);
+  const top = Math.min (corner1.y, corner2.y);
+  const width = Math.abs (corner1.x - corner2.x);
+  const height = Math.abs (corner1.y - corner2.y);
 
-  path(context, options, (context) => {
-    context.rect(left, top, width, height);
+  path (context, options, context => {
+    context.rect (left, top, width, height);
   });
 }
 
@@ -290,25 +332,36 @@ export function drawRect (context, element, corner1, corner2, options, coordSyst
  *     system of the points passed in to the function. If "pixel" then cornerstone.pixelToCanvas
  *     is used to transform the points from pixel to canvas coordinates.
  */
-export function fillOutsideRect (context, element, corner1, corner2, options, coordSystem = 'pixel') {
+export function fillOutsideRect (
+  context,
+  element,
+  corner1,
+  corner2,
+  options,
+  coordSystem = 'pixel'
+) {
   if (coordSystem === 'pixel') {
     const cornerstone = external.cornerstone;
 
-    corner1 = cornerstone.pixelToCanvas(element, corner1);
-    corner2 = cornerstone.pixelToCanvas(element, corner2);
+    corner1 = cornerstone.pixelToCanvas (element, corner1);
+    corner2 = cornerstone.pixelToCanvas (element, corner2);
   }
 
-  const left = Math.min(corner1.x, corner2.x);
-  const top = Math.min(corner1.y, corner2.y);
-  const width = Math.abs(corner1.x - corner2.x);
-  const height = Math.abs(corner1.y - corner2.y);
+  const left = Math.min (corner1.x, corner2.x);
+  const top = Math.min (corner1.y, corner2.y);
+  const width = Math.abs (corner1.x - corner2.x);
+  const height = Math.abs (corner1.y - corner2.y);
 
-  path(context, options, (context) => {
-    context.rect(0, 0, context.canvas.clientWidth, context.canvas.clientHeight);
-    context.rect(left + width, top, -width, height);
+  path (context, options, context => {
+    context.rect (
+      0,
+      0,
+      context.canvas.clientWidth,
+      context.canvas.clientHeight
+    );
+    context.rect (left + width, top, -width, height);
   });
 }
-
 
 /**
  * Draw a filled rectangle defined by `boundingBox` using the style defined by `fillStyle`.
@@ -319,7 +372,12 @@ export function fillOutsideRect (context, element, corner1, corner2, options, co
  */
 export function fillBox (context, boundingBox, fillStyle) {
   context.fillStyle = fillStyle;
-  context.fillRect(boundingBox.left, boundingBox.top, boundingBox.width, boundingBox.height);
+  context.fillRect (
+    boundingBox.left,
+    boundingBox.top,
+    boundingBox.width,
+    boundingBox.height
+  );
 }
 
 /**
@@ -331,13 +389,23 @@ export function fillBox (context, boundingBox, fillStyle) {
  * @param {FillStyle} fillStyle - The fillStyle to apply to the text.
  * @param {Number} padding - The amount of padding above/below each line in canvas units. Note this gives an inter-line spacing of `2*padding`.
  */
-export function fillTextLines (context, boundingBox, textLines, fillStyle, padding) {
-  const fontSize = textStyle.getFontSize();
+export function fillTextLines (
+  context,
+  boundingBox,
+  textLines,
+  fillStyle,
+  padding
+) {
+  const fontSize = textStyle.getFontSize ();
 
-  context.font = textStyle.getFont();
+  context.font = textStyle.getFont ();
   context.textBaseline = 'top';
   context.fillStyle = fillStyle;
-  textLines.forEach(function (text, index) {
-    context.fillText(text, boundingBox.left + padding, boundingBox.top + padding + index * (fontSize + padding));
+  textLines.forEach (function (text, index) {
+    context.fillText (
+      text,
+      boundingBox.left + padding,
+      boundingBox.top + padding + index * (fontSize + padding)
+    );
   });
 }

@@ -1,16 +1,8 @@
 import external from '../externalModules.js';
-import {Register} from './proxies/toolState';
+import {RegisterProxyState} from './proxies/toolState';
 
-// This implements an imageId specific tool state management strategy.  This means that
-// Measurements data is tied to a specific imageId and only visible for enabled elements
-// That are displaying that imageId.
-
+let toolState = RegisterProxyState ();
 function newImageIdSpecificToolStateManager () {
-  let toolState = Register ();
-
-  // Here we add tool state, this is done by tools as well
-  // As modules that restore saved state
-
   function saveImageIdToolState (imageId) {
     return toolState[imageId];
   }
@@ -50,9 +42,8 @@ function newImageIdSpecificToolStateManager () {
     }
 
     const toolData = imageIdToolState[toolType];
-
     // Finally, add this new tool to the state
-    toolData.data.push (data);
+    imageIdToolState[toolType].data.push (data);
   }
 
   // Here you can get state - used by tools as well as modules
@@ -76,7 +67,6 @@ function newImageIdSpecificToolStateManager () {
     }
 
     const toolData = imageIdToolState[toolType];
-
     return toolData;
   }
 

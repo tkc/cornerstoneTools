@@ -1,13 +1,12 @@
-let stateFilter = obj => {
-  // console.log (obj);
+let wacher = (obj, cb) => {
   return obj;
 };
 
-const SetFillter = filterFunc => {
-  stateFilter = filterFunc;
+const SetProxyWacher = newWacher => {
+  wacher = newWacher;
 };
 
-const Register = () => {
+const RegisterProxyState = () => {
   let proxyStackState = {};
   const handler = {
     get: (obj, prop) => {
@@ -18,12 +17,11 @@ const Register = () => {
     },
     set: (obj, prop, value) => {
       obj[prop] = value;
-      proxyStackState = stateFilter (proxyStackState);
+      proxyStackState = wacher (proxyStackState, {});
       return true;
     },
   };
-  proxyStackState = new Proxy (proxyStackState, handler);
-  return proxyStackState;
+  return new Proxy (proxyStackState, handler);
 };
 
-export {SetFillter, Register};
+export {SetProxyWacher, RegisterProxyState};

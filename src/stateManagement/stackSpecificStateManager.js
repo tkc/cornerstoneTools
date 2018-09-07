@@ -6,12 +6,15 @@ import {
   setElementToolStateManager,
 } from './toolState.js';
 
-import {Register} from './proxies/stackState';
+import {RegisterProxyState} from './proxies/stackState';
+
+// let toolState = RegisterProxyState ();
 
 // This implements an Stack specific tool state management strategy.  This means
 // That tool data is shared between all imageIds in a given stack
 function newStackSpecificToolStateManager (toolTypes, oldStateManager) {
-  let toolState = Register ();
+  // let toolState = Register ();
+  let toolState = RegisterProxyState ();
 
   function saveToolState () {
     return toolState;
@@ -54,7 +57,6 @@ function newStackSpecificToolStateManager (toolTypes, oldStateManager) {
           data: [],
         };
       }
-
       return toolState[toolType];
     }
 
