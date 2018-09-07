@@ -7,8 +7,8 @@ import drawHandles from '../manipulators/drawHandles.js';
 import drawTextBox from '../util/drawTextBox.js';
 import getRGBPixels from '../util/getRGBPixels.js';
 import calculateSUV from '../util/calculateSUV.js';
-import { getToolState } from '../stateManagement/toolState.js';
-import { getNewContext, draw } from '../util/drawing.js';
+import {getToolState} from '../stateManagement/toolState.js';
+import {getNewContext, draw} from '../util/drawing.js';
 
 const toolType = 'probe';
 
@@ -24,11 +24,10 @@ function createNewMeasurement (mouseEventData) {
         x: mouseEventData.currentPoints.image.x,
         y: mouseEventData.currentPoints.image.y,
         highlight: true,
-        active: true
-      }
-    }
+        active: true,
+      },
+    },
   };
-
 
   return measurementData;
 }
@@ -40,17 +39,19 @@ function pointNearTool (element, data, coords) {
     return false;
   }
 
-  const endCanvas = external.cornerstone.pixelToCanvas(element, data.handles.end);
+  const endCanvas = external.cornerstone.pixelToCanvas (
+    element,
+    data.handles.end
+  );
 
-
-  return external.cornerstoneMath.point.distance(endCanvas, coords) < 5;
+  return external.cornerstoneMath.point.distance (endCanvas, coords) < 5;
 }
 
 function onImageRendered (e) {
   const eventData = e.detail;
 
   // If we have no toolData for this element, return immediately as there is nothing to do
-  const toolData = getToolState(e.currentTarget, toolType);
+  const toolData = getToolState (e.currentTarget, toolType);
 
   if (!toolData) {
     return;
@@ -58,9 +59,9 @@ function onImageRendered (e) {
 
   const cornerstone = external.cornerstone;
   // We have tool data for this element - iterate over each one and draw it
-  const context = getNewContext(eventData.canvasContext.canvas);
+  const context = getNewContext (eventData.canvasContext.canvas);
 
-  const fontHeight = textStyle.getFontSize();
+  const fontHeight = textStyle.getFontSize ();
 
   for (let i = 0; i < toolData.data.length; i++) {
     const data = toolData.data[i];
@@ -69,48 +70,60 @@ function onImageRendered (e) {
       continue;
     }
 
-    draw(context, (context) => {
-
-      const color = toolColors.getColorIfActive(data);
+    draw (context, context => {
+      const color = toolColors.getColorIfActive (data);
 
       // Draw the handles
-      drawHandles(context, eventData, data.handles, color);
+      drawHandles (context, eventData, data.handles, color);
 
-      const x = Math.round(data.handles.end.x);
-      const y = Math.round(data.handles.end.y);
+      const x = Math.round (data.handles.end.x);
+      const y = Math.round (data.handles.end.y);
       let storedPixels;
 
-      let text,
-        str;
+      let text, str;
 
-      if (x >= 0 && y >= 0 && x < eventData.image.columns && y < eventData.image.rows) {
+      if (
+        x >= 0 &&
+        y >= 0 &&
+        x < eventData.image.columns &&
+        y < eventData.image.rows
+      ) {
         if (eventData.image.color) {
           text = `${x}, ${y}`;
-          storedPixels = getRGBPixels(eventData.element, x, y, 1, 1);
+          storedPixels = getRGBPixels (eventData.element, x, y, 1, 1);
           str = `R: ${storedPixels[0]} G: ${storedPixels[1]} B: ${storedPixels[2]}`;
         } else {
-          storedPixels = cornerstone.getStoredPixels(eventData.element, x, y, 1, 1);
+          storedPixels = cornerstone.getStoredPixels (
+            eventData.element,
+            x,
+            y,
+            1,
+            1
+          );
           const sp = storedPixels[0];
           const mo = sp * eventData.image.slope + eventData.image.intercept;
-          const suv = calculateSUV(eventData.image, sp);
+          const suv = calculateSUV (eventData.image, sp);
 
           // Draw text
           text = `${x}, ${y}`;
-          str = `SP: ${sp} MO: ${parseFloat(mo.toFixed(3))}`;
+          str = `SP: ${sp} MO: ${parseFloat (mo.toFixed (3))}`;
           if (suv) {
-            str += ` SUV: ${parseFloat(suv.toFixed(3))}`;
+            str += ` SUV: ${parseFloat (suv.toFixed (3))}`;
           }
         }
 
         const coords = {
           // Translate the x/y away from the cursor
           x: data.handles.end.x + 3,
-          y: data.handles.end.y - 3
+          y: data.handles.end.y - 3,
         };
-        const textCoords = cornerstone.pixelToCanvas(eventData.element, coords);
+        const textCoords = cornerstone.pixelToCanvas (
+          eventData.element,
+          coords
+        );
 
-        drawTextBox(context, str, textCoords.x, textCoords.y + fontHeight + 5, color);
-        drawTextBox(context, text, textCoords.x, textCoords.y, color);
+        // drawTextBox(context, str, textCoords.x, textCoords.y + fontHeight + 5, color);
+        // drawTextBox(context, text, textCoords.x, textCoords.y, color);
       }
     });
   }
@@ -118,21 +131,18 @@ function onImageRendered (e) {
 // /////// END IMAGE RENDERING ///////
 
 // Module exports
-const probe = mouseButtonTool({
+const probe = mouseButtonTool ({
   createNewMeasurement,
   onImageRendered,
   pointNearTool,
-  toolType
+  toolType,
 });
 
-const probeTouch = touchTool({
+const probeTouch = touchTool ({
   createNewMeasurement,
   onImageRendered,
   pointNearTool,
-  toolType
+  toolType,
 });
 
-export {
-  probe,
-  probeTouch
-};
+export {probe, probeTouch};
