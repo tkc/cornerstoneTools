@@ -7,58 +7,65 @@ function newFrameOfReferenceSpecificToolStateManager () {
 
   // Here we add tool state, this is done by tools as well
   // As modules that restore saved state
-  function addFrameOfReferenceSpecificToolState (frameOfReference, toolType, data) {
+  function addFrameOfReferenceSpecificToolState (
+    frameOfReference,
+    toolType,
+    data
+  ) {
     // If we don't have any tool state for this frameOfReference, add an empty object
-    if (toolState.hasOwnProperty(frameOfReference) === false) {
+    if (toolState.hasOwnProperty (frameOfReference) === false) {
       toolState[frameOfReference] = {};
     }
 
     const frameOfReferenceToolState = toolState[frameOfReference];
 
     // If we don't have tool state for this type of tool, add an empty object
-    if (frameOfReferenceToolState.hasOwnProperty(toolType) === false) {
+    if (frameOfReferenceToolState.hasOwnProperty (toolType) === false) {
       frameOfReferenceToolState[toolType] = {
-        data: []
+        data: [],
       };
     }
 
     const toolData = frameOfReferenceToolState[toolType];
 
     // Finally, add this new tool to the state
-    toolData.data.push(data);
+    toolData.data.push (data);
   }
 
   // Here you can get state - used by tools as well as modules
   // That save state persistently
   function getFrameOfReferenceSpecificToolState (frameOfReference, toolType) {
     // If we don't have any tool state for this frame of reference, return undefined
-    if (toolState.hasOwnProperty(frameOfReference) === false) {
+    if (toolState.hasOwnProperty (frameOfReference) === false) {
       return;
     }
 
     const frameOfReferenceToolState = toolState[frameOfReference];
 
     // If we don't have tool state for this type of tool, return undefined
-    if (frameOfReferenceToolState.hasOwnProperty(toolType) === false) {
+    if (frameOfReferenceToolState.hasOwnProperty (toolType) === false) {
       return;
     }
 
     const toolData = frameOfReferenceToolState[toolType];
 
-
     return toolData;
   }
 
-  function removeFrameOfReferenceSpecificToolState (frameOfReference, toolType, data) {
+  function removeFrameOfReferenceSpecificToolState (
+    frameOfReference,
+    toolType,
+    data
+  ) {
     // If we don't have any tool state for this frame of reference, return undefined
-    if (toolState.hasOwnProperty(frameOfReference) === false) {
+    if (toolState.hasOwnProperty (frameOfReference) === false) {
       return;
     }
 
     const frameOfReferenceToolState = toolState[frameOfReference];
 
     // If we don't have tool state for this type of tool, return undefined
-    if (frameOfReferenceToolState.hasOwnProperty(toolType) === false) {
+    if (frameOfReferenceToolState.hasOwnProperty (toolType) === false) {
       return;
     }
 
@@ -73,22 +80,22 @@ function newFrameOfReferenceSpecificToolStateManager () {
     }
 
     if (indexOfData !== -1) {
-      toolData.data.splice(indexOfData, 1);
+      toolData.data.splice (indexOfData, 1);
     }
   }
 
   return {
     get: getFrameOfReferenceSpecificToolState,
     add: addFrameOfReferenceSpecificToolState,
-    remove: removeFrameOfReferenceSpecificToolState
+    remove: removeFrameOfReferenceSpecificToolState,
   };
 }
 
 // A global frameOfReferenceSpecificToolStateManager - the most common case is to share 3d information
 // Between stacks of images
-const globalFrameOfReferenceSpecificToolStateManager = newFrameOfReferenceSpecificToolStateManager();
+const globalFrameOfReferenceSpecificToolStateManager = newFrameOfReferenceSpecificToolStateManager ();
 
 export {
   newFrameOfReferenceSpecificToolStateManager,
-  globalFrameOfReferenceSpecificToolStateManager
+  globalFrameOfReferenceSpecificToolStateManager,
 };
