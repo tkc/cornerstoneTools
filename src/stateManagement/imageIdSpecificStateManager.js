@@ -1,7 +1,7 @@
 import external from '../externalModules.js';
-import {RegisterProxyState} from './proxies/toolState';
+import {RegisterToolProxyState} from './proxies/toolState';
 
-let toolState = RegisterProxyState ();
+let toolState = RegisterToolProxyState ();
 function newImageIdSpecificToolStateManager () {
   function saveImageIdToolState (imageId) {
     return toolState[imageId];

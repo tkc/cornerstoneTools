@@ -1,4 +1,3 @@
-
 let defaultColor = 'white',
   activeColor = 'greenyellow',
   fillColor = 'transparent';
@@ -31,7 +30,6 @@ function getColorIfActive (data) {
   if (data.color) {
     return data.color;
   }
-
   return data.active ? activeColor : defaultColor;
 }
 
@@ -42,7 +40,7 @@ const toolColors = {
   getToolColor,
   setActiveColor,
   getActiveColor,
-  getColorIfActive
+  getColorIfActive,
 };
 
 export default toolColors;

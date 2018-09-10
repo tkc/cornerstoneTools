@@ -1,13 +1,25 @@
-let wacher = (obj, cb) => {
+let proxyState = {};
+
+let wacher = obj => {
   return obj;
 };
 
-const SetProxyWacher = newWacher => {
+const SetStackProxyWacher = newWacher => {
   wacher = newWacher;
 };
 
-const RegisterProxyState = () => {
-  let proxyStackState = {};
+const GetSatckProxyState = () => {
+  return proxyState;
+};
+
+const RestoreStackProxyState = restoreState => {
+  proxyState = restoreState;
+};
+
+const RegisterStackProxyState = () => {
+  // TODO: why need this code
+  proxyState = {};
+
   const handler = {
     get: (obj, prop) => {
       if (typeof obj[prop] === 'object' && obj[prop] !== null) {
@@ -17,11 +29,16 @@ const RegisterProxyState = () => {
     },
     set: (obj, prop, value) => {
       obj[prop] = value;
-      proxyStackState = wacher (proxyStackState, {});
+      proxyState = wacher (proxyState);
       return true;
     },
   };
-  return new Proxy (proxyStackState, handler);
+  return new Proxy (proxyState, handler);
 };
 
-export {SetProxyWacher, RegisterProxyState};
+export {
+  SetStackProxyWacher,
+  RegisterStackProxyState,
+  GetSatckProxyState,
+  RestoreStackProxyState,
+};
