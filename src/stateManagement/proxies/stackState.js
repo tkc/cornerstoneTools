@@ -1,21 +1,13 @@
 let proxyState = {};
 
 let wacher = obj => {
-  console.log (obj);
-  // obj.test = {
-  //   stack: {
-  //     data: [
-  //       {currentImageIdIndex: 1, imageIds: ['mock://1', 'mock://2']},
-  //       {currentImageIdIndex: 1, imageIds: ['mock://1', 'mock://2']},
-  //     ],
-  //   },
-  //   referenceLines: {
-  //     data: [
-  //       {synchronizationContext: {enabled: true}},
-  //       {synchronizationContext: {enabled: true}},
-  //     ],
-  //   },
-  // };
+  if (
+    obj.viewportslayout_1.hasOwnProperty ('stack') &&
+    obj.viewportslayout_1.stack.data[0]
+  ) {
+    console.log (obj.viewportslayout_1.stack.data[0].currentImageIdIndex);
+    obj.viewportslayout_1.stack.data[0].currentImageIdIndex = 1;
+  }
   return obj;
 };
 
