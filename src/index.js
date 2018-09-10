@@ -109,6 +109,11 @@ export {
 } from './stateManagement/stackSpecificStateManager.js';
 
 export {
+  addProxyStackStateManager,
+  newProxyStackSpecificToolStateManager,
+} from './stateManagement/proxyStackSpecificStateManager.js';
+
+export {
   default as loadHandlerManager,
 } from './stateManagement/loadHandlerManager.js';
 

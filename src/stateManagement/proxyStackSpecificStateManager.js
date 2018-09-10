@@ -12,11 +12,15 @@ let state = RegisterStackProxyState ();
 
 // This implements an Stack specific tool state management strategy.  This means
 // That tool data is shared between all imageIds in a given stack
-function newStackSpecificToolStateManager (toolTypes, oldStateManager) {
+function newProxyStackSpecificToolStateManager (
+  toolTypes,
+  oldStateManager,
+  viewportDivId
+) {
   // TODO: why need this code
 
   let baseState = {};
-  const id = 'test';
+  const id = viewportDivId;
 
   const handler = {
     get: (obj, prop) => {
@@ -97,7 +101,7 @@ function newStackSpecificToolStateManager (toolTypes, oldStateManager) {
 
 const stackStateManagers = [];
 
-function addStackStateManager (element, otherTools) {
+function addProxyStackStateManager (element, otherTools, viewportDivId) {
   let oldStateManager = getElementToolStateManager (element);
 
   if (!oldStateManager) {
@@ -119,9 +123,10 @@ function addStackStateManager (element, otherTools) {
     stackTools = stackTools.concat (otherTools);
   }
 
-  const stackSpecificStateManager = newStackSpecificToolStateManager (
+  const stackSpecificStateManager = newProxyStackSpecificToolStateManager (
     stackTools,
-    oldStateManager
+    oldStateManager,
+    viewportDivId
   );
 
   // TODO:
@@ -129,13 +134,4 @@ function addStackStateManager (element, otherTools) {
   setElementToolStateManager (element, stackSpecificStateManager);
 }
 
-const stackSpecificStateManager = {
-  newStackSpecificToolStateManager,
-  addStackStateManager,
-};
-
-export {
-  stackSpecificStateManager,
-  newStackSpecificToolStateManager,
-  addStackStateManager,
-};
+export {newProxyStackSpecificToolStateManager, addProxyStackStateManager};
