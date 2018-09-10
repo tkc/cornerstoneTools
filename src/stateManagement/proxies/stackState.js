@@ -1,13 +1,6 @@
 let proxyState = {};
 
 let wacher = obj => {
-  if (
-    obj.viewportslayout_1.hasOwnProperty ('stack') &&
-    obj.viewportslayout_1.stack.data[0]
-  ) {
-    console.log (obj.viewportslayout_1.stack.data[0].currentImageIdIndex);
-    obj.viewportslayout_1.stack.data[0].currentImageIdIndex = 1;
-  }
   return obj;
 };
 
