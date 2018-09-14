@@ -17,6 +17,7 @@
     "url": "https://github.com/cornerstonejs/cornerstoneTools.git"
   },
   "scripts": {
+    "buildonly": "npm run webpack",
     "build": "npm run test && npm run version && npm run webpack",
     "clean": "npm run clean:dist && npm run clean:coverage",
     "clean:dist": "shx rm -rf dist",

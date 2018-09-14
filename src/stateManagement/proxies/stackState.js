@@ -39,4 +39,5 @@ export {
   RegisterStackProxyState,
   GetSatckProxyState,
   RestoreStackProxyState,
+  proxyState,
 };
