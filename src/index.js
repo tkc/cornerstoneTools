@@ -182,8 +182,8 @@ export {dragProbe, dragProbeTouch} from './imageTools/dragProbe.js';
 
 export {ellipticalRoi, ellipticalRoiTouch} from './imageTools/ellipticalRoi.js';
 export {eraser, eraserTouch} from './imageTools/eraser.js';
-export {freehand} from './imageTools/freehand.js';
-export {freehandSculpter} from './imageTools/freehandSculpter.js';
+// export {freehand} from './imageTools/freehand.js';
+// export {freehandSculpter} from './imageTools/freehandSculpter.js';
 
 export {highlight, highlightTouch} from './imageTools/highlight.js';
 export {default as imageStats} from './imageTools/imageStats.js';
