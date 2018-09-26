@@ -5,9 +5,14 @@ import drawTextBox from '../util/drawTextBox.js';
 import roundToDecimal from '../util/roundToDecimal.js';
 import toolColors from '../stateManagement/toolColors.js';
 import drawHandles from '../manipulators/drawHandles.js';
-import { getToolState } from '../stateManagement/toolState.js';
+import {getToolState} from '../stateManagement/toolState.js';
 import lineSegDistance from '../util/lineSegDistance.js';
-import { getNewContext, draw, setShadow, drawJoinedLines } from '../util/drawing.js';
+import {
+  getNewContext,
+  draw,
+  setShadow,
+  drawJoinedLines,
+} from '../util/drawing.js';
 
 const toolType = 'angle';
 
@@ -23,27 +28,27 @@ function createNewMeasurement (mouseEventData) {
         x: mouseEventData.currentPoints.image.x - 20,
         y: mouseEventData.currentPoints.image.y + 10,
         highlight: true,
-        active: false
+        active: false,
       },
       end: {
         x: mouseEventData.currentPoints.image.x,
         y: mouseEventData.currentPoints.image.y,
         highlight: true,
-        active: true
+        active: true,
       },
       start2: {
         x: mouseEventData.currentPoints.image.x - 20,
         y: mouseEventData.currentPoints.image.y + 10,
         highlight: true,
-        active: false
+        active: false,
       },
       end2: {
         x: mouseEventData.currentPoints.image.x,
         y: mouseEventData.currentPoints.image.y + 20,
         highlight: true,
-        active: false
-      }
-    }
+        active: false,
+      },
+    },
   };
 
   return angleData;
@@ -55,8 +60,12 @@ function pointNearTool (element, data, coords) {
     return false;
   }
 
-  return lineSegDistance(element, data.handles.start, data.handles.end, coords) < 5 ||
-    lineSegDistance(element, data.handles.start2, data.handles.end2, coords) < 5;
+  return (
+    lineSegDistance (element, data.handles.start, data.handles.end, coords) <
+      5 ||
+    lineSegDistance (element, data.handles.start2, data.handles.end2, coords) <
+      5
+  );
 }
 
 // /////// BEGIN IMAGE RENDERING ///////
@@ -64,16 +73,16 @@ function onImageRendered (e) {
   const eventData = e.detail;
 
   // If we have no toolData for this element, return immediately as there is nothing to do
-  const toolData = getToolState(e.currentTarget, toolType);
+  const toolData = getToolState (e.currentTarget, toolType);
 
   if (toolData === undefined) {
     return;
   }
 
   // We have tool data for this element - iterate over each one and draw it
-  const context = getNewContext(eventData.canvasContext.canvas);
+  const context = getNewContext (eventData.canvasContext.canvas);
 
-  const config = angle.getConfiguration();
+  const config = angle.getConfiguration ();
   const cornerstone = external.cornerstone;
 
   for (let i = 0; i < toolData.data.length; i++) {
@@ -83,61 +92,85 @@ function onImageRendered (e) {
       continue;
     }
 
-    draw(context, (context) => {
+    draw (context, context => {
       // Configurable shadow
-      setShadow(context, config);
+      setShadow (context, config);
 
       // Differentiate the color of activation tool
-      const color = toolColors.getColorIfActive(data);
+      const color = toolColors.getColorIfActive (data);
 
-      drawJoinedLines(context, eventData.element, data.handles.end, [data.handles.start, data.handles.end2], { color });
+      drawJoinedLines (
+        context,
+        eventData.element,
+        data.handles.end,
+        [data.handles.start, data.handles.end2],
+        {color}
+      );
 
       // Draw the handles
-      drawHandles(context, eventData, data.handles);
+      drawHandles (context, eventData, data.handles);
 
       // Need to work on correct angle to measure.  This is a cobb angle and we need to determine
       // Where lines cross to measure angle. For now it will show smallest angle.
-      const dx1 = (Math.ceil(data.handles.start.x) - Math.ceil(data.handles.end.x)) * eventData.image.columnPixelSpacing;
-      const dy1 = (Math.ceil(data.handles.start.y) - Math.ceil(data.handles.end.y)) * eventData.image.rowPixelSpacing;
-      const dx2 = (Math.ceil(data.handles.start2.x) - Math.ceil(data.handles.end2.x)) * eventData.image.columnPixelSpacing;
-      const dy2 = (Math.ceil(data.handles.start2.y) - Math.ceil(data.handles.end2.y)) * eventData.image.rowPixelSpacing;
+      const dx1 =
+        (Math.ceil (data.handles.start.x) - Math.ceil (data.handles.end.x)) *
+        eventData.image.columnPixelSpacing;
+      const dy1 =
+        (Math.ceil (data.handles.start.y) - Math.ceil (data.handles.end.y)) *
+        eventData.image.rowPixelSpacing;
+      const dx2 =
+        (Math.ceil (data.handles.start2.x) - Math.ceil (data.handles.end2.x)) *
+        eventData.image.columnPixelSpacing;
+      const dy2 =
+        (Math.ceil (data.handles.start2.y) - Math.ceil (data.handles.end2.y)) *
+        eventData.image.rowPixelSpacing;
 
-      let angle = Math.acos(Math.abs(((dx1 * dx2) + (dy1 * dy2)) / (Math.sqrt((dx1 * dx1) + (dy1 * dy1)) * Math.sqrt((dx2 * dx2) + (dy2 * dy2)))));
+      let angle = Math.acos (
+        Math.abs (
+          (dx1 * dx2 + dy1 * dy2) /
+            (Math.sqrt (dx1 * dx1 + dy1 * dy1) *
+              Math.sqrt (dx2 * dx2 + dy2 * dy2))
+        )
+      );
 
-      angle *= (180 / Math.PI);
+      angle *= 180 / Math.PI;
 
-      const rAngle = roundToDecimal(angle, 2);
+      const rAngle = roundToDecimal (angle, 2);
       const str = '00B0'; // Degrees symbol
-      const text = rAngle.toString() + String.fromCharCode(parseInt(str, 16));
+      const text =
+        rAngle.toString () + String.fromCharCode (parseInt (str, 16));
 
-      const handleStartCanvas = cornerstone.pixelToCanvas(eventData.element, data.handles.start2);
-      const handleEndCanvas = cornerstone.pixelToCanvas(eventData.element, data.handles.end2);
+      const handleStartCanvas = cornerstone.pixelToCanvas (
+        eventData.element,
+        data.handles.start2
+      );
+      const handleEndCanvas = cornerstone.pixelToCanvas (
+        eventData.element,
+        data.handles.end2
+      );
 
       const textX = (handleStartCanvas.x + handleEndCanvas.x) / 2;
       const textY = (handleStartCanvas.y + handleEndCanvas.y) / 2;
 
-      drawTextBox(context, text, textX, textY, color);
+      drawTextBox (context, text, textX, textY, color);
     });
   }
 }
 // /////// END IMAGE RENDERING ///////
 
 // Module exports
-const angle = mouseButtonTool({
+const angle = mouseButtonTool ({
   createNewMeasurement,
   onImageRendered,
   pointNearTool,
-  toolType
+  toolType,
 });
 
-const angleTouch = touchTool({
+const angleTouch = touchTool ({
   createNewMeasurement,
   onImageRendered,
   pointNearTool,
-  toolType
+  toolType,
 });
 
-export {
-  angle,
-  angleTouch
-};
+export {angle, angleTouch};
