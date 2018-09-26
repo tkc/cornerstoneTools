@@ -1,6 +1,7 @@
 let proxyState = {};
 
 let wacher = obj => {
+  console.log (obj);
   return obj;
 };
 

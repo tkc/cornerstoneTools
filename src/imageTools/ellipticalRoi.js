@@ -10,6 +10,7 @@ import calculateSUV from '../util/calculateSUV.js';
 import drawLinkedTextBox from '../util/drawLinkedTextBox.js';
 import {getToolState} from '../stateManagement/toolState.js';
 import {drawEllipse, getNewContext, draw, setShadow} from '../util/drawing.js';
+import {IsRestoreState} from './appConfig/appConfig';
 
 const toolType = 'ellipticalRoi';
 
@@ -163,24 +164,31 @@ function onImageRendered (e) {
         color,
       });
 
-      // If the tool configuration specifies to only draw the handles on hover / active,
-      // Follow this logic
-      if (config && config.drawHandlesOnHover) {
-        // Draw the handles if the tool is active
-        if (data.active === true) {
-          drawHandles (context, eventData, data.handles, color);
+      if (!IsRestoreState (data)) {
+        // If the tool configuration specifies to only draw the handles on hover / active,
+        // Follow this logic
+        if (config && config.drawHandlesOnHover) {
+          // Draw the handles if the tool is active
+          if (data.active === true) {
+            drawHandles (context, eventData, data.handles, color);
+          } else {
+            // If the tool is inactive, draw the handles only if each specific handle is being
+            // Hovered over
+            const handleOptions = {
+              drawHandlesIfActive: true,
+            };
+            drawHandles (
+              context,
+              eventData,
+              data.handles,
+              color,
+              handleOptions
+            );
+          }
         } else {
-          // If the tool is inactive, draw the handles only if each specific handle is being
-          // Hovered over
-          const handleOptions = {
-            drawHandlesIfActive: true,
-          };
-
-          drawHandles (context, eventData, data.handles, color, handleOptions);
+          // If the tool has no configuration settings, always draw the handles
+          drawHandles (context, eventData, data.handles, color);
         }
-      } else {
-        // If the tool has no configuration settings, always draw the handles
-        drawHandles (context, eventData, data.handles, color);
       }
 
       // Define variables for the area and mean/standard deviation
