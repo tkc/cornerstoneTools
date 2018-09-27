@@ -192,14 +192,6 @@ function Synchronizer (event, handler) {
       return;
     }
 
-    const isExist = sourceElements.filter (e => {
-      return e.id === element.id;
-    }).length;
-
-    if (isExist) {
-      return;
-    }
-
     // Add to our list of enabled elements
     sourceElements.push (element);
 
@@ -220,14 +212,6 @@ function Synchronizer (event, handler) {
     const index = targetElements.indexOf (element);
 
     if (index !== -1) {
-      return;
-    }
-
-    const isExist = sourceElements.filter (e => {
-      return e.id === element.id;
-    }).length;
-
-    if (isExist) {
       return;
     }
 
