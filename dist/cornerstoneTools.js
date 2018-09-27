@@ -1,4 +1,4 @@
-/*! cornerstone-tools - 2.3.9 - 2018-09-25 | (c) 2017 Chris Hafey | https://github.com/cornerstonejs/cornerstoneTools */
+/*! cornerstone-tools - 2.3.9 - 2018-09-27 | (c) 2017 Chris Hafey | https://github.com/cornerstonejs/cornerstoneTools */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -75,7 +75,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "fb6590c214694bf08fc7";
+/******/ 	var hotCurrentHash = "f6c14ab3995dd5805951";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -1098,6 +1098,26 @@ var angleTouch = (0, _touchTool2.default)({
 
 exports.angle = angle;
 exports.angleTouch = angleTouch;
+
+/***/ }),
+
+/***/ "./imageTools/appConfig/appConfig.js":
+/*!*******************************************!*\
+  !*** ./imageTools/appConfig/appConfig.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+function IsRestoreState(data) {
+  return data.hasOwnProperty(['type']) && data.type === 'restore';
+}
+exports.IsRestoreState = IsRestoreState;
 
 /***/ }),
 
@@ -2367,6 +2387,8 @@ var _toolState = __webpack_require__(/*! ../stateManagement/toolState.js */ "./s
 
 var _drawing = __webpack_require__(/*! ../util/drawing.js */ "./util/drawing.js");
 
+var _appConfig = __webpack_require__(/*! ./appConfig/appConfig */ "./imageTools/appConfig/appConfig.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var toolType = 'ellipticalRoi';
@@ -2514,24 +2536,25 @@ function onImageRendered(e) {
         color: color
       });
 
-      // If the tool configuration specifies to only draw the handles on hover / active,
-      // Follow this logic
-      if (config && config.drawHandlesOnHover) {
-        // Draw the handles if the tool is active
-        if (data.active === true) {
-          (0, _drawHandles2.default)(context, eventData, data.handles, color);
+      if (!(0, _appConfig.IsRestoreState)(data)) {
+        // If the tool configuration specifies to only draw the handles on hover / active,
+        // Follow this logic
+        if (config && config.drawHandlesOnHover) {
+          // Draw the handles if the tool is active
+          if (data.active === true) {
+            (0, _drawHandles2.default)(context, eventData, data.handles, color);
+          } else {
+            // If the tool is inactive, draw the handles only if each specific handle is being
+            // Hovered over
+            var handleOptions = {
+              drawHandlesIfActive: true
+            };
+            (0, _drawHandles2.default)(context, eventData, data.handles, color, handleOptions);
+          }
         } else {
-          // If the tool is inactive, draw the handles only if each specific handle is being
-          // Hovered over
-          var handleOptions = {
-            drawHandlesIfActive: true
-          };
-
-          (0, _drawHandles2.default)(context, eventData, data.handles, color, handleOptions);
+          // If the tool has no configuration settings, always draw the handles
+          (0, _drawHandles2.default)(context, eventData, data.handles, color);
         }
-      } else {
-        // If the tool has no configuration settings, always draw the handles
-        (0, _drawHandles2.default)(context, eventData, data.handles, color);
       }
 
       // Define variables for the area and mean/standard deviation
@@ -5082,6 +5105,8 @@ var _drawLinkedTextBox2 = _interopRequireDefault(_drawLinkedTextBox);
 
 var _drawing = __webpack_require__(/*! ../util/drawing.js */ "./util/drawing.js");
 
+var _appConfig = __webpack_require__(/*! ./appConfig/appConfig */ "./imageTools/appConfig/appConfig.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var toolType = 'rectangleRoi';
@@ -5206,8 +5231,11 @@ function onImageRendered(e) {
   var element = eventData.element;
   var lineWidth = _toolStyle2.default.getToolWidth();
   var config = rectangleRoi.getConfiguration();
+
   var seriesModule = cornerstone.metaData.get('generalSeriesModule', image.imageId);
+
   var imagePlane = cornerstone.metaData.get('imagePlaneModule', image.imageId);
+
   var modality = void 0;
   var rowPixelSpacing = void 0;
   var colPixelSpacing = void 0;
@@ -5247,24 +5275,25 @@ function onImageRendered(e) {
         color: color
       });
 
-      // If the tool configuration specifies to only draw the handles on hover / active,
-      // Follow this logic
-      if (config && config.drawHandlesOnHover) {
-        // Draw the handles if the tool is active
-        if (data.active === true) {
-          (0, _drawHandles2.default)(context, eventData, data.handles, color);
+      if (!(0, _appConfig.IsRestoreState)(data)) {
+        // If the tool configuration specifies to only draw the handles on hover / active,
+        // Follow this logic
+        if (config && config.drawHandlesOnHover) {
+          // Draw the handles if the tool is active
+          if (data.active === true) {
+            (0, _drawHandles2.default)(context, eventData, data.handles, color);
+          } else {
+            // If the tool is inactive, draw the handles only if each specific handle is being
+            // Hovered over
+            var handleOptions = {
+              drawHandlesIfActive: true
+            };
+            (0, _drawHandles2.default)(context, eventData, data.handles, color, handleOptions);
+          }
         } else {
-          // If the tool is inactive, draw the handles only if each specific handle is being
-          // Hovered over
-          var handleOptions = {
-            drawHandlesIfActive: true
-          };
-
-          (0, _drawHandles2.default)(context, eventData, data.handles, color, handleOptions);
+          // If the tool has no configuration settings, always draw the handles
+          (0, _drawHandles2.default)(context, eventData, data.handles, color);
         }
-      } else {
-        // If the tool has no configuration settings, always draw the handles
-        (0, _drawHandles2.default)(context, eventData, data.handles, color);
       }
 
       // Define variables for the area and mean/standard deviation
@@ -16359,7 +16388,6 @@ function Synchronizer(event, handler) {
   };
 
   function fireEvent(sourceElement, eventData) {
-
     // If the synchronizer is disabled, bail out.
     if (!that.enabled) {
       return;
