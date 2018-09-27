@@ -1,11 +1,11 @@
 import EVENTS from '../events.js';
 import external from '../externalModules.js';
 import convertToVector3 from '../util/convertToVector3.js';
-import { clearToolOptionsByElement } from '../toolOptions.js';
+import {clearToolOptionsByElement} from '../toolOptions.js';
 
 function unique (array) {
-  return array.filter(function (value, index, self) {
-    return self.indexOf(value) === index;
+  return array.filter (function (value, index, self) {
+    return self.indexOf (value) === index;
   });
 }
 
@@ -41,35 +41,43 @@ function Synchronizer (event, handler) {
     initialData.distances = {};
     initialData.imageIds = {
       sourceElements: [],
-      targetElements: []
+      targetElements: [],
     };
 
-    sourceElements.forEach(function (sourceElement) {
-      const sourceEnabledElement = cornerstone.getEnabledElement(sourceElement);
+    sourceElements.forEach (function (sourceElement) {
+      const sourceEnabledElement = cornerstone.getEnabledElement (
+        sourceElement
+      );
 
       if (!sourceEnabledElement || !sourceEnabledElement.image) {
         return;
       }
 
       const sourceImageId = sourceEnabledElement.image.imageId;
-      const sourceImagePlane = cornerstone.metaData.get('imagePlaneModule', sourceImageId);
+      const sourceImagePlane = cornerstone.metaData.get (
+        'imagePlaneModule',
+        sourceImageId
+      );
 
       if (!sourceImagePlane || !sourceImagePlane.imagePositionPatient) {
         return;
       }
 
-      const sourceImagePosition = convertToVector3(sourceImagePlane.imagePositionPatient);
+      const sourceImagePosition = convertToVector3 (
+        sourceImagePlane.imagePositionPatient
+      );
 
-      if (initialData.hasOwnProperty(sourceEnabledElement)) {
+      if (initialData.hasOwnProperty (sourceEnabledElement)) {
         return;
       }
       initialData.distances[sourceImageId] = {};
 
+      initialData.imageIds.sourceElements.push (sourceImageId);
 
-      initialData.imageIds.sourceElements.push(sourceImageId);
-
-      targetElements.forEach(function (targetElement) {
-        const targetEnabledElement = cornerstone.getEnabledElement(targetElement);
+      targetElements.forEach (function (targetElement) {
+        const targetEnabledElement = cornerstone.getEnabledElement (
+          targetElement
+        );
 
         if (!targetEnabledElement || !targetEnabledElement.image) {
           return;
@@ -77,7 +85,7 @@ function Synchronizer (event, handler) {
 
         const targetImageId = targetEnabledElement.image.imageId;
 
-        initialData.imageIds.targetElements.push(targetImageId);
+        initialData.imageIds.targetElements.push (targetImageId);
 
         if (sourceElement === targetElement) {
           return;
@@ -87,31 +95,39 @@ function Synchronizer (event, handler) {
           return;
         }
 
-        if (initialData.distances[sourceImageId].hasOwnProperty(targetImageId)) {
+        if (
+          initialData.distances[sourceImageId].hasOwnProperty (targetImageId)
+        ) {
           return;
         }
 
-        const targetImagePlane = cornerstone.metaData.get('imagePlaneModule', targetImageId);
+        const targetImagePlane = cornerstone.metaData.get (
+          'imagePlaneModule',
+          targetImageId
+        );
 
         if (!targetImagePlane || !targetImagePlane.imagePositionPatient) {
           return;
         }
 
-        const targetImagePosition = convertToVector3(targetImagePlane.imagePositionPatient);
+        const targetImagePosition = convertToVector3 (
+          targetImagePlane.imagePositionPatient
+        );
 
-        initialData.distances[sourceImageId][targetImageId] = targetImagePosition.clone().sub(sourceImagePosition);
+        initialData.distances[sourceImageId][
+          targetImageId
+        ] = targetImagePosition.clone ().sub (sourceImagePosition);
       });
 
-      if (!Object.keys(initialData.distances[sourceImageId]).length) {
+      if (!Object.keys (initialData.distances[sourceImageId]).length) {
         delete initialData.distances[sourceImageId];
       }
     });
   };
 
   function fireEvent (sourceElement, eventData) {
-
     // If the synchronizer is disabled, bail out.
-    if(!that.enabled) {
+    if (!that.enabled) {
       return;
     }
 
@@ -121,15 +137,15 @@ function Synchronizer (event, handler) {
     }
 
     ignoreFiredEvents = true;
-    targetElements.forEach(function (targetElement) {
-      const targetIndex = targetElements.indexOf(targetElement);
+    targetElements.forEach (function (targetElement) {
+      const targetIndex = targetElements.indexOf (targetElement);
 
       if (targetIndex === -1) {
         return;
       }
 
       const targetImageId = initialData.imageIds.targetElements[targetIndex];
-      const sourceIndex = sourceElements.indexOf(sourceElement);
+      const sourceIndex = sourceElements.indexOf (sourceElement);
 
       if (sourceIndex === -1) {
         return;
@@ -142,10 +158,17 @@ function Synchronizer (event, handler) {
       if (sourceImageId === targetImageId) {
         positionDifference = 0;
       } else if (initialData.distances[sourceImageId] !== undefined) {
-        positionDifference = initialData.distances[sourceImageId][targetImageId];
+        positionDifference =
+          initialData.distances[sourceImageId][targetImageId];
       }
 
-      eventHandler(that, sourceElement, targetElement, eventData, positionDifference);
+      eventHandler (
+        that,
+        sourceElement,
+        targetElement,
+        eventData,
+        positionDifference
+      );
     });
     ignoreFiredEvents = false;
   }
@@ -157,108 +180,124 @@ function Synchronizer (event, handler) {
       return;
     }
 
-    fireEvent(e.currentTarget, eventData);
+    fireEvent (e.currentTarget, eventData);
   }
 
   // Adds an element as a source
   this.addSource = function (element) {
     // Return if this element was previously added
-    const index = sourceElements.indexOf(element);
+    const index = sourceElements.indexOf (element);
 
     if (index !== -1) {
       return;
     }
 
+    const isExist = sourceElements.filter (e => {
+      return e.id === element.id;
+    }).length;
+
+    if (isExist) {
+      return;
+    }
+
     // Add to our list of enabled elements
-    sourceElements.push(element);
+    sourceElements.push (element);
 
     // Subscribe to the event
-    event.split(' ').forEach((oneEvent) => {
-      element.addEventListener(oneEvent, onEvent);
+    event.split (' ').forEach (oneEvent => {
+      element.addEventListener (oneEvent, onEvent);
     });
 
     // Update the initial distances between elements
-    that.getDistances();
+    that.getDistances ();
 
-    that.updateDisableHandlers();
+    that.updateDisableHandlers ();
   };
 
   // Adds an element as a target
   this.addTarget = function (element) {
     // Return if this element was previously added
-    const index = targetElements.indexOf(element);
+    const index = targetElements.indexOf (element);
 
     if (index !== -1) {
       return;
     }
 
+    const isExist = sourceElements.filter (e => {
+      return e.id === element.id;
+    }).length;
+
+    if (isExist) {
+      return;
+    }
+
     // Add to our list of enabled elements
-    targetElements.push(element);
+    targetElements.push (element);
 
     // Update the initial distances between elements
-    that.getDistances();
+    that.getDistances ();
 
     // Invoke the handler for this new target element
-    eventHandler(that, element, element, 0);
+    eventHandler (that, element, element, 0);
 
-    that.updateDisableHandlers();
+    that.updateDisableHandlers ();
   };
 
   // Adds an element as both a source and a target
   this.add = function (element) {
-    that.addSource(element);
-    that.addTarget(element);
+    that.addSource (element);
+    that.addTarget (element);
   };
 
   // Removes an element as a source
   this.removeSource = function (element) {
     // Find the index of this element
-    const index = sourceElements.indexOf(element);
+    const index = sourceElements.indexOf (element);
 
     if (index === -1) {
       return;
     }
 
     // Remove this element from the array
-    sourceElements.splice(index, 1);
+    sourceElements.splice (index, 1);
 
     // Stop listening for the event
-    event.split(' ').forEach((oneEvent) => {
-      element.removeEventListener(oneEvent, onEvent);
+    event.split (' ').forEach (oneEvent => {
+      element.removeEventListener (oneEvent, onEvent);
     });
 
     // Update the initial distances between elements
-    that.getDistances();
+    that.getDistances ();
 
     // Update everyone listening for events
-    fireEvent(element);
-    that.updateDisableHandlers();
+    fireEvent (element);
+    that.updateDisableHandlers ();
   };
 
   // Removes an element as a target
   this.removeTarget = function (element) {
     // Find the index of this element
-    const index = targetElements.indexOf(element);
+    const index = targetElements.indexOf (element);
 
     if (index === -1) {
       return;
     }
 
     // Remove this element from the array
-    targetElements.splice(index, 1);
+    targetElements.splice (index, 1);
 
     // Update the initial distances between elements
-    that.getDistances();
+    that.getDistances ();
 
     // Invoke the handler for the removed target
-    eventHandler(that, element, element, 0);
-    that.updateDisableHandlers();
+    eventHandler (that, element, element, 0);
+    that.updateDisableHandlers ();
   };
 
   // Removes an element as both a source and target
   this.remove = function (element) {
-    that.removeTarget(element);
-    that.removeSource(element);
+    that.removeTarget (element);
+    that.removeSource (element);
   };
 
   // Returns the source elements
@@ -273,37 +312,37 @@ function Synchronizer (event, handler) {
 
   this.displayImage = function (element, image, viewport) {
     ignoreFiredEvents = true;
-    cornerstone.displayImage(element, image, viewport);
+    cornerstone.displayImage (element, image, viewport);
     ignoreFiredEvents = false;
   };
 
   this.setViewport = function (element, viewport) {
     ignoreFiredEvents = true;
-    cornerstone.setViewport(element, viewport);
+    cornerstone.setViewport (element, viewport);
     ignoreFiredEvents = false;
   };
 
   function disableHandler (e) {
     const element = e.detail.element;
 
-    that.remove(element);
-    clearToolOptionsByElement(element);
+    that.remove (element);
+    clearToolOptionsByElement (element);
   }
 
   this.updateDisableHandlers = function () {
-    const elements = unique(sourceElements.concat(targetElements));
+    const elements = unique (sourceElements.concat (targetElements));
 
-    elements.forEach(function (element) {
-      element.removeEventListener(EVENTS.ELEMENT_DISABLED, disableHandler);
-      element.addEventListener(EVENTS.ELEMENT_DISABLED, disableHandler);
+    elements.forEach (function (element) {
+      element.removeEventListener (EVENTS.ELEMENT_DISABLED, disableHandler);
+      element.addEventListener (EVENTS.ELEMENT_DISABLED, disableHandler);
     });
   };
 
   this.destroy = function () {
-    const elements = unique(sourceElements.concat(targetElements));
+    const elements = unique (sourceElements.concat (targetElements));
 
-    elements.forEach(function (element) {
-      that.remove(element);
+    elements.forEach (function (element) {
+      that.remove (element);
     });
   };
 }
