@@ -215,6 +215,7 @@ export {simpleAngle, simpleAngleTouch} from './imageTools/simpleAngle.js';
 export {
   default as simpleMouseButtonTool,
 } from './imageTools/simpleMouseButtonTool.js';
+
 export {textMarker, textMarkerTouch} from './imageTools/textMarker.js';
 
 export {default as touchDragTool} from './imageTools/touchDragTool.js';
@@ -234,14 +235,18 @@ export {default as version} from './version.js';
 
 export {setToolOptions, getToolOptions} from './toolOptions.js';
 
+export {restoreMask} from './imageTools/restoreMask.js';
+export {restoreLine} from './imageTools/restoreLine.js';
+export {restoreTextMarker} from './imageTools/restoreTextMarker.js';
+
 export {
   SetToolProxyWacher,
   GetToolProxyState,
   RestoreToolProxyState,
-} from './stateManagement/proxies/toolState';
+} from './stateManagement/proxies/toolState.js';
 
 export {
   SetStackProxyWacher,
   GetSatckProxyState,
   RestoreStackProxyState,
-} from './stateManagement/proxies/stackState';
+} from './stateManagement/proxies/stackState.js';
