@@ -1,20 +1,20 @@
 import restoreMouseButtonTool from './restoreMouseButtonTool.js';
-import {getNewContext, draw, drawLine} from '../util/drawing.js';
 import {getToolState} from '../stateManagement/toolState.js';
+import {drawEllipse, getNewContext, draw} from '../util/drawing.js';
 
-const toolType = 'restoreLine';
+const toolType = 'restoreEllipticalRoi';
 
 function createNewMeasurement () {}
 function pointNearTool () {}
 
 function onImageRendered (e) {
   const eventData = e.detail;
-  const context = getNewContext (eventData.canvasContext.canvas);
-  const {element} = eventData;
-  const toolData = getToolState (eventData.element, toolType);
+  const toolData = getToolState (e.currentTarget, toolType);
   if (!toolData) {
     return;
   }
+  const element = eventData.element;
+  const context = getNewContext (eventData.canvasContext.canvas);
   for (let i = 0; i < toolData.data.length; i++) {
     const data = toolData.data[i];
     if (data.visible === false) {
@@ -22,18 +22,18 @@ function onImageRendered (e) {
     }
     draw (context, context => {
       const color = data.color;
-      drawLine (context, element, data.handles.start, data.handles.end, {
+      drawEllipse (context, element, data.handles.start, data.handles.end, {
         color,
       });
     });
   }
 }
 
-const restoreLine = restoreMouseButtonTool ({
+const restoreEllipticalRoi = restoreMouseButtonTool ({
   createNewMeasurement,
   onImageRendered,
   pointNearTool,
   toolType,
 });
 
-export {restoreLine};
+export {restoreEllipticalRoi};

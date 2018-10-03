@@ -1,39 +1,36 @@
 import restoreMouseButtonTool from './restoreMouseButtonTool.js';
-import {getNewContext, draw, drawLine} from '../util/drawing.js';
+import drawHandles from '../manipulators/drawHandles.js';
 import {getToolState} from '../stateManagement/toolState.js';
+import {getNewContext, draw} from '../util/drawing.js';
 
-const toolType = 'restoreLine';
+const toolType = 'restoreProbe';
 
 function createNewMeasurement () {}
 function pointNearTool () {}
 
 function onImageRendered (e) {
   const eventData = e.detail;
-  const context = getNewContext (eventData.canvasContext.canvas);
-  const {element} = eventData;
-  const toolData = getToolState (eventData.element, toolType);
+  const toolData = getToolState (e.currentTarget, toolType);
   if (!toolData) {
     return;
   }
+  const context = getNewContext (eventData.canvasContext.canvas);
   for (let i = 0; i < toolData.data.length; i++) {
     const data = toolData.data[i];
     if (data.visible === false) {
       continue;
     }
     draw (context, context => {
-      const color = data.color;
-      drawLine (context, element, data.handles.start, data.handles.end, {
-        color,
-      });
+      drawHandles (context, eventData, data.handles, data.color);
     });
   }
 }
 
-const restoreLine = restoreMouseButtonTool ({
+const restoreProbe = restoreMouseButtonTool ({
   createNewMeasurement,
   onImageRendered,
   pointNearTool,
   toolType,
 });
 
-export {restoreLine};
+export {restoreProbe};

@@ -14,7 +14,6 @@ export default function (mouseToolInterface) {
   let configuration = {};
   const toolType = mouseToolInterface.toolType;
 
-  function addNewMeasurement () {}
   function mouseDownActivateCallback () {}
   function mouseMoveCallback () {}
   function mouseDownCallback () {}

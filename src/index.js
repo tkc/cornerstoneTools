@@ -237,7 +237,10 @@ export {setToolOptions, getToolOptions} from './toolOptions.js';
 
 export {restoreMask} from './imageTools/restoreMask.js';
 export {restoreLine} from './imageTools/restoreLine.js';
-export {restoreTextMarker} from './imageTools/restoreTextMarker.js';
+export {restoreText} from './imageTools/restoreText.js';
+export {restoreEllipticalRoi} from './imageTools/restoreEllipticalRoi.js';
+export {restoreRectangleRoi} from './imageTools/restoreRectangleRoi.js';
+export {restoreProbe} from './imageTools/restoreProbe.js';
 
 export {
   SetToolProxyWacher,

@@ -5,7 +5,7 @@ import drawTextBox, {textBoxWidth} from '../util/drawTextBox.js';
 import {getToolState} from '../stateManagement/toolState.js';
 import {getNewContext, draw} from '../util/drawing.js';
 
-const toolType = 'restoreTextMarker';
+const toolType = 'restoreText';
 
 function createNewMeasurement (mouseEventData) {
   const measurementData = {
@@ -72,7 +72,7 @@ function onImageRendered (e) {
 function pointNearTool () {}
 function mouseDoubleClickCallback () {}
 
-const restoreTextMarker = restoreMouseButtonTool ({
+const restoreText = restoreMouseButtonTool ({
   createNewMeasurement,
   onImageRendered,
   pointNearTool,
@@ -80,4 +80,4 @@ const restoreTextMarker = restoreMouseButtonTool ({
   mouseDoubleClickCallback,
 });
 
-export {restoreTextMarker};
+export {restoreText};
